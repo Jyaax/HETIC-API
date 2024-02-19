@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Générateur de PDF</title>
+  </head>
+  <body>
+    <h1>Générateur de PDF</h1>
+    <form id="pdfForm">
+      <label for="documentType">Type de document :</label>
+      <select id="documentType" name="documentType">
+        <option value="facture">Facture</option>
+        <option value="devis">Devis</option>
+        <option value="cv">CV</option>
+      </select>
+      <button type="button" onclick="generatePDF()">Générer PDF</button>
+      <a id="openPdfLink" href="#" target="_blank" style="display: none"
+        >Ouvrir le PDF généré</a
+      >
+    </form>
+
+    <script>
+      function generatePDF() {
+        const documentType = document.getElementById("documentType").value;
+
+        fetch("http://localhost:3000/generate-pdf", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ type: documentType }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            const openPdfLink = document.getElementById("openPdfLink");
+            openPdfLink.href = data.url;
+            openPdfLink.style.display = "inline";
+          })
+          .catch((error) => {
+            console.error("Erreur lors de la génération du PDF :", error);
+          });
+      }
+    </script>
+  </body>
+</html>
